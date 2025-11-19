@@ -1,0 +1,218 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Table Tennis Ball Launcher</title>
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+    <!-- Login/Register Page -->
+    <div id="loginPage" class="page active">
+        <div class="login-container">
+            <div class="login-card">
+                <div class="text-center">
+                    <div class="image">
+                        <img src="assets/image.png" alt="Table Tennis Launcher" onerror="this.style.display='none'">
+                    </div>
+                    <h1>Table Tennis Launcher</h1>
+                </div>
+
+                <!-- Login Form -->
+                <div id="loginForm" class="form-container">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="loginEmail" placeholder="your@email.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="loginPassword" placeholder="Enter password">
+                    </div>
+                    <button onclick="handleLogin()" class="btn btn-primary">Login</button>
+                    <button onclick="showRegister()" class="btn btn-secondary">Create Account</button>
+                </div>
+
+                <!-- Register Form -->
+                <div id="registerForm" class="form-container" style="display: none;">
+                    <div class="form-group">
+                        <label>Full Name</label>
+                        <input type="text" id="registerName">
+                    </div>
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="registerEmail">
+                    </div>
+                    <div class="form-group">
+                        <label>Password</label>
+                        <input type="password" id="registerPassword" placeholder="Min 6 characters">
+                    </div>
+                    <button onclick="handleRegister()" class="btn btn-primary">Register</button>
+                    <button onclick="showLogin()" class="btn btn-secondary">Back to Login</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Control Page -->
+    <div id="controlPage" class="page">
+        <div class="header">
+            <div class="header-content">
+                <h1>Ball Launcher Control</h1>
+                <div class="header-actions">
+                    <button onclick="showHistory()" class="btn-icon">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <circle cx="12" cy="12" r="10"></circle>
+                            <polyline points="12 6 12 12 16 14"></polyline>
+                        </svg>
+                        <span class="btn-text">History</span>
+                    </button>
+                    <button onclick="showProfile()" class="btn-icon">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                        <span id="userName" class="btn-text"></span>
+                    </button>
+                    <button onclick="handleLogout()" class="btn-icon btn-danger">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path>
+                            <polyline points="16 17 21 12 16 7"></polyline>
+                            <line x1="21" y1="12" x2="9" y2="12"></line>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- Connection Card -->
+            <div class="card">
+                <div class="card-header">
+                    <h2>Device Connection</h2>
+                    <div id="connectionStatus" class="status-badge status-disconnected">
+                        <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <line x1="1" y1="1" x2="23" y2="23"></line>
+                            <path d="M16.72 11.06A10.94 10.94 0 0 1 19 12.55"></path>
+                            <path d="M5 12.55a10.94 10.94 0 0 1 5.17-2.39"></path>
+                            <path d="M10.71 5.05A16 16 0 0 1 22.58 9"></path>
+                            <path d="M1.42 9a15.91 15.91 0 0 1 4.7-2.88"></path>
+                            <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                            <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                        </svg>
+                        <span id="statusText">Disconnected</span>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>ESP32 IP Address</label>
+                    <input type="text" id="esp32IP" value="192.168.4.1">
+                </div>
+                <button id="connectBtn" onclick="connectToLauncher()" class="btn btn-primary btn-full">
+                    <svg class="icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                        <path d="M5 12.55a11 11 0 0 1 14.08 0"></path>
+                        <path d="M1.42 9a16 16 0 0 1 21.16 0"></path>
+                        <path d="M8.53 16.11a6 6 0 0 1 6.95 0"></path>
+                        <line x1="12" y1="20" x2="12.01" y2="20"></line>
+                    </svg>
+                    Connect to Launcher
+                </button>
+            </div>
+
+            <!-- Mode Selection Card -->
+            <div class="card">
+                <h2>Launch Modes</h2>
+                <div class="modes-grid">
+                    <button onclick="selectMode('fast')" class="mode-card" id="fastMode" disabled>
+                        <svg class="mode-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"></polygon>
+                        </svg>
+                        <h3>Fast Mode</h3>
+                        <p>High-speed launches for advanced training</p>
+                    </button>
+
+                    <button onclick="selectMode('slow')" class="mode-card" id="slowMode" disabled>
+                        <svg class="mode-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M9.59 4.59A2 2 0 1 1 11 8H2m10.59 11.41A2 2 0 1 0 14 16H2m15.73-8.27A2.5 2.5 0 1 1 19.5 12H2"></path>
+                        </svg>
+                        <h3>Slow Mode</h3>
+                        <p>Gentle pace for beginners</p>
+                    </button>
+
+                    <button onclick="selectMode('continuous')" class="mode-card" id="continuousMode" disabled>
+                        <svg class="mode-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <polyline points="17 1 21 5 17 9"></polyline>
+                            <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                            <polyline points="7 23 3 19 7 15"></polyline>
+                            <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                        </svg>
+                        <h3>Continuous Mode</h3>
+                        <p>Non-stop ball delivery</p>
+                    </button>
+                </div>
+
+                <div id="activeMode" class="active-mode" style="display: none;">
+                    <p>Active Mode: <strong id="activeModeText"></strong></p>
+                    <button onclick="stopSession()" class="btn btn-danger btn-full">Stop Session</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- History Page -->
+    <div id="historyPage" class="page">
+        <div class="header">
+            <div class="header-content">
+                <h1>Training History</h1>
+                <button onclick="showControl()" class="btn btn-primary">Back to Control</button>
+            </div>
+        </div>
+        <div class="main-content">
+            <div class="card">
+                <h2>Your Sessions</h2>
+                <div id="historyList">
+                    <div class="loading">Loading history...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Profile Page -->
+    <div id="profilePage" class="page">
+        <div class="header">
+            <div class="header-content">
+                <h1>Profile Settings</h1>
+                <button onclick="showControl()" class="btn btn-secondary">Cancel</button>
+            </div>
+        </div>
+        <div class="main-content profile-content">
+            <div class="card">
+                <div class="profile-avatar">
+                    <div class="avatar-circle">
+                        <svg class="icon-large" viewBox="0 0 24 24" fill="none" stroke="currentColor">
+                            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                            <circle cx="12" cy="7" r="4"></circle>
+                        </svg>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Full Name</label>
+                    <input type="text" id="editName">
+                </div>
+                <div class="form-group">
+                    <label>Email</label>
+                    <input type="email" id="editEmail" disabled>
+                    <small class="text-muted">Email cannot be changed</small>
+                </div>
+                <button onclick="updateProfile()" class="btn btn-primary btn-full">Save Changes</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Firebase SDK (v10.7.1) -->
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
+    
+    <!-- App Script -->
+    <script src="script.js"></script>
+</body>
+</html>

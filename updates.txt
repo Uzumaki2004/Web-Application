@@ -1,0 +1,88 @@
+line 136 
+  async function connectToLauncher() {
+    const esp32IP = document.getElementById('esp32IP').value;
+    
+    try {
+        // Send HTTP GET request to ESP32
+        const response = await fetch(`http://${esp32IP}/connect`);
+        const data = await response.json();
+        
+        if (data.status === 'connected') {
+            isConnected = true;
+            alert('Connected to launcher successfully!');
+        }
+    } catch (error) {
+        alert('Failed to connect. Check ESP32 IP address.');
+    }
+}
+
+
+line 197 
+  async function selectMode(mode) {
+    const esp32IP = document.getElementById('esp32IP').value;
+    
+    currentMode = mode;
+    
+    try {
+        // Send HTTP POST request to ESP32 with mode info
+        await fetch(`http://${esp32IP}/mode`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ mode: mode })
+        });
+        
+        console.log(`Mode changed to: ${mode}`);
+    } catch (error) {
+        console.error('Failed to change mode:', error);
+    }
+}
+
+ESP32 code 
+  #include <WiFi.h>
+#include <WebServer.h>
+
+WebServer server(80);
+
+void setup() {
+    // Connect to WiFi
+    WiFi.begin("YourWiFi", "YourPassword");
+    
+    // When web app visits http://192.168.1.100/connect
+    server.on("/connect", HTTP_GET, []() {
+        server.send(200, "application/json", "{\"status\":\"connected\"}");
+    });
+    
+    // When web app sends mode change to http://192.168.1.100/mode
+    server.on("/mode", HTTP_POST, []() {
+        String body = server.arg("plain");
+        // Parse the mode (fast/slow/continuous)
+        // Control your motors accordingly
+        server.send(200, "application/json", "{\"status\":\"ok\"}");
+    });
+    
+    server.begin();
+}
+
+void loop() {
+    server.handleClient();
+}
+
+
+firebase SDK
+  // Import the functions you need from the SDKs you need
+import { initializeApp } from "firebase/app";
+// TODO: Add SDKs for Firebase products that you want to use
+// https://firebase.google.com/docs/web/setup#available-libraries
+
+// Your web app's Firebase configuration
+const firebaseConfig = {
+  apiKey: "AIzaSyCARL-ty-60zXRoOj72utwo1ftVqz-9ABo",
+  authDomain: "table-tennis-ball-launcher.firebaseapp.com",
+  projectId: "table-tennis-ball-launcher",
+  storageBucket: "table-tennis-ball-launcher.firebasestorage.app",
+  messagingSenderId: "1006741586196",
+  appId: "1:1006741586196:web:329de35e46dc4091d80201"
+};
+
+// Initialize Firebase
+const app = initializeApp(firebaseConfig);
